@@ -1,0 +1,1 @@
+where connectionFactory in micro-sender rabbitMQConfig comes from ?

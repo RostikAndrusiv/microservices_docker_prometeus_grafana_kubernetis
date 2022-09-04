@@ -1,0 +1,75 @@
+services:
+  micro-sender:
+    image: micro-sender
+    container_name: 'micro-sender'
+    ports:
+      - 9000:9000
+    networks:
+      sender:
+        aliases:
+          - "micro-sender"
+  micro-recipient:
+    image: micro-recipient
+    container_name: 'micro-recipient'
+    ports:
+      - 9001:9001
+    networks:
+      recipient:
+        aliases:
+          - "micro-recipient"
+  micro-collector:
+    image: micro-collector
+    container_name: 'micro-collector'
+    ports:
+      - 9002:9002
+    networks:
+      recipient:
+        aliases:
+          - "micro-collector"
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      sender:
+        aliases:
+          - "rabbit"
+      recipient:
+        aliases:
+          - "rabbit"
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      sender:
+        aliases:
+          - "grafana"
+      recipient:
+        aliases:
+          - "grafana"
+  prometheus:
+    image: prom/prometheus:v2.30.3
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+volumes:
+  prometheus-data:
+  grafana-data:
+    external: true
+networks:
+  sender:
+    driver: bridge
+  recipient:
+    driver: bridge

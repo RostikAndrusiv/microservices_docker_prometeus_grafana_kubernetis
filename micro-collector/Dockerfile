@@ -1,0 +1,8 @@
+FROM openjdk:11-slim
+EXPOSE 9002
+ARG JAR_FILE=target/micro-collector-0.0.1-SNAPSHOT.jar
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+WORKDIR /app
+#execute the application
+ENTRYPOINT ["java","-jar","/app.jar"]
