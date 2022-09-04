@@ -32,18 +32,14 @@ public class NotificationListenerJava {
 
     @Scheduled(fixedRate = 2000)
     public void listener() throws IOException, TimeoutException {
-        try (Connection connection = RabbitMQConfig.getConnection(factory);
-             Channel ch = connection.createChannel()) {
 
+        Connection connection = RabbitMQConfig.getConnection(factory);
+        try (Channel ch = connection.createChannel()) {
             ch.exchangeDeclare(EXCHANGE, "topic", true);
             ch.queueBind(QUEUE, EXCHANGE, ROUTING_KEY);
-
-            DeliverCallback callback = (consumerTag, delivery) -> {
-                String msg = new String(delivery.getBody(), "UTF-8");
-                repository.save(gson.fromJson(msg, Message.class));
-                log.info("saved" + msg);
-            };
-            ch.basicConsume(QUEUE, true, callback, consumerTag -> {});
+            String msg = new String(ch.basicGet(QUEUE, true).getBody());
+            repository.save(gson.fromJson(msg, Message.class));
+            log.info("saved" + msg);
         }
     }
 }
