@@ -35,12 +35,13 @@ public class NotificationListenerJava {
         try (Channel ch = connection.createChannel()) {
             ch.exchangeDeclare(EXCHANGE, "topic", true);
             ch.queueBind(QUEUE, EXCHANGE, ROUTING_KEY);
-            Optional.ofNullable(ch.basicGet(QUEUE, true)).ifPresentOrElse(response -> {
-                        var msg = new String(response.getBody());
-                        repository.save(gson.fromJson(msg, Message.class));
-                        log.info("saved" + msg);
-                        },
-                    () -> log.info("Queue is empty T_T"));
+            Optional.ofNullable(ch.basicGet(QUEUE, true))
+                    .ifPresentOrElse(response -> {
+                                var msg = new String(response.getBody());
+                                repository.save(gson.fromJson(msg, Message.class));
+                                log.info("saved" + msg);
+                            },
+                            () -> log.info("Queue is empty T_T"));
         }
     }
 }

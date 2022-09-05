@@ -2,6 +2,8 @@ services:
   micro-sender:
     image: micro-sender
     container_name: 'micro-sender'
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
     ports:
       - 9000:9000
     networks:
@@ -11,6 +13,8 @@ services:
   micro-recipient:
     image: micro-recipient
     container_name: 'micro-recipient'
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
     ports:
       - 9001:9001
     networks:
@@ -20,6 +24,8 @@ services:
   micro-collector:
     image: micro-collector
     container_name: 'micro-collector'
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
     ports:
       - 9002:9002
     networks:
