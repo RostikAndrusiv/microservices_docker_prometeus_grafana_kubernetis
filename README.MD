@@ -9,7 +9,13 @@
  Install loki driver `docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`  
  run `docker volume create --name=grafana-data`  
  Run application `docker-compose up`    
- micro-sender is available on http://localhost:9000    
+ micro-sender is available on http://localhost:9000
+ request example:  
+ {  
+ "uzer":"Max Power",  
+ "message":"om-nom"  
+ }  
  RabbitMQ is available on http://localhost:15672    
  Grafana is available on http://localhost:3000  
- Use http://host.docker.internal:9090 URL to create Prometheus dashbord in grafana
+ Use http://host.docker.internal:9090 URL to create Prometheus data source in grafana  
+ Use http://loki:3100 to create loki data source in grafana 

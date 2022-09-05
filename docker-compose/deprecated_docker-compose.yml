@@ -4,14 +4,9 @@ services:
     container_name: 'micro-sender'
     environment:
       - "SPRING_PROFILES_ACTIVE=docker"
-    logging:
-      driver: loki
-      options:
-        loki-url: http://localhost:3100/loki/api/v1/push
     ports:
       - 9000:9000
     networks:
-      loki:
       sender:
         aliases:
           - "micro-sender"
@@ -20,14 +15,9 @@ services:
     container_name: 'micro-recipient'
     environment:
       - "SPRING_PROFILES_ACTIVE=docker"
-    logging:
-      driver: loki
-      options:
-        loki-url: http://localhost:3100/loki/api/v1/push
     ports:
       - 9001:9001
     networks:
-      loki:
       recipient:
         aliases:
           - "micro-recipient"
@@ -36,14 +26,9 @@ services:
     container_name: 'micro-collector'
     environment:
       - "SPRING_PROFILES_ACTIVE=docker"
-    logging:
-      driver: loki
-      options:
-        loki-url: http://localhost:3100/loki/api/v1/push
     ports:
       - 9002:9002
     networks:
-      loki:
       recipient:
         aliases:
           - "micro-collector"
@@ -57,7 +42,6 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      loki:
       sender:
         aliases:
           - "rabbit"
@@ -72,7 +56,6 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
     networks:
-      loki:
       sender:
         aliases:
           - "grafana"
@@ -87,30 +70,11 @@ services:
       - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
-  loki:
-    image: grafana/loki:2.2.1
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./promtailloki/loki:/etc/loki
-    command: -config.file=/etc/loki/loki-config.yaml
-    networks:
-      loki:
-
-  promtail:
-    image: grafana/promtail:2.2.1
-    volumes:
-      - /var/log:/var/log
-      - ./promtailloki/promtail:/etc/promtail
-    command: -config.file=/etc/promtail/promtail-config.yaml
-    networks:
-      loki:
 volumes:
   prometheus-data:
   grafana-data:
     external: true
 networks:
-  loki:
   sender:
     driver: bridge
   recipient:
