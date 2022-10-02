@@ -9,8 +9,8 @@
  Install loki driver `docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`  
  run `docker volume create --name=grafana-data`  
  Run application `docker-compose up`    
- micro-sender is available on http://localhost:9000
- request example:  
+ micro-sender is available on http://localhost:9000/notification  
+ POST request example:  
  {  
  "uzer":"Max Power",  
  "message":"om-nom"  
